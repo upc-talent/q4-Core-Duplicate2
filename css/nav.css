@@ -1,0 +1,66 @@
+/* United Pharmacy — top navigation, shared by ALL three pages.
+   Everything is namespaced (.snav*) and its variables are scoped to .snav,
+   so it can sit on top of activity1-dashboard.html without touching that page's styles. */
+
+.snav {
+  --teal: #00A99B;
+  --blue: #188CCD;
+  --text: #F3F6FC;
+  --glass: rgba(255,255,255,0.07);
+  --glass-strong: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.14);
+  --font: "Poppins", -apple-system, "Segoe UI", Arial, Helvetica, sans-serif;
+
+  position: relative;
+  z-index: 2;
+  padding: 16px 16px 14px;
+  text-align: center;
+  font-family: var(--font);
+  color: var(--text);
+}
+.snav, .snav * { box-sizing: border-box; }
+
+.snav-logo { display: inline-block; margin-bottom: 12px; line-height: 0; border-radius: 6px; }
+.snav-logo img { display: block; height: 40px; width: auto; max-width: 100%; }
+.snav-logo:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
+
+.snav-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.snav-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px;
+  font: 500 13.5px/1.2 var(--font);
+  color: var(--text);
+  text-decoration: none;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s, transform .1s;
+}
+.snav-pill:hover { background: var(--glass-strong); }
+.snav-pill:active { transform: scale(.97); }
+.snav-pill:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+.snav-pill.active {
+  color: var(--teal);
+  border-color: var(--teal);
+  background: rgba(0,169,155,0.12);
+  box-shadow: 0 0 18px rgba(0,169,155,0.18);
+}
+.snav-refresh { color: var(--teal); border-color: rgba(0,169,155,0.75); background: transparent; }
+.snav-refresh:hover { background: rgba(0,169,155,0.14); }
+.snav-refresh svg { width: 15px; height: 15px; }
+.snav-refresh.busy svg { animation: snav-spin .8s linear infinite; }
+
+@keyframes snav-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .snav-pill { transition: none; }
+  .snav-refresh.busy svg { animation-duration: 2s; }
+}
+
+@media (max-width: 760px) {
+  .snav-pill { padding: 8px 14px; font-size: 13px; }
+  .snav-logo img { height: 34px; }
+}
+@media (max-width: 420px) { .snav-pills { gap: 8px; } }

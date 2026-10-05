@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>United Pharmacy — Activity 2 Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/activity2.css">
+</head>
+<body>
+
+<!-- Ambient glows (fixed, decorative) -->
+<div class="glow g1" aria-hidden="true"></div>
+<div class="glow g2" aria-hidden="true"></div>
+<div class="glow g3" aria-hidden="true"></div>
+
+<div class="app">
+  <!-- Top navigation (built by js/nav.js) -->
+  <header class="snav" id="site-nav" data-active="act2"></header>
+  <script src="js/nav.js"></script>
+
+  <main class="page">
+    <div class="wrap">
+      <div class="hero sm">
+        <h1 class="title">Activity 2 Dashboard</h1>
+        <p class="subtitle">Team results, case by case</p>
+      </div>
+
+      <!-- 1. Summary table -->
+      <div class="glass card">
+        <div class="card-head"><h2>Team summary</h2><span class="count" id="teamCount"></span></div>
+        <div id="summary"></div>
+      </div>
+
+      <!-- 2. Team filter -->
+      <div class="glass toolbar">
+        <label for="teamFilter">Team</label>
+        <select id="teamFilter" disabled><option value="">Loading teams…</option></select>
+        <span class="tip">Tip: click a row in the table to jump to that team.</span>
+      </div>
+
+      <!-- 3. Team detail -->
+      <div id="detail"></div>
+    </div>
+  </main>
+
+  <!-- Data status -->
+  <footer class="foot" id="foot" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="statusText">Loading…</span></footer>
+</div>
+
+<noscript><p style="position:relative;z-index:1;text-align:center;color:#FFC983">This dashboard needs JavaScript.</p></noscript>
+
+<script src="js/data.js"></script>
+<script src="js/activity2.js"></script>
+</body>
+</html>

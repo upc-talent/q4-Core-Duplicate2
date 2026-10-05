@@ -1,0 +1,122 @@
+/* United Pharmacy — shared styles for the Home and Activity 2 pages (nav lives in nav.css) */
+
+/* =====================================================================
+   DESIGN TOKENS
+   ===================================================================== */
+:root {
+  --navy: #223974;
+  --orange: #F8991D;
+  --blue: #188CCD;
+  --teal: #00A99B;
+  --bg: #0A1330;
+  --text: #F3F6FC;
+  --dim: #A9B4CC;
+  --glass: rgba(255,255,255,0.07);
+  --glass-strong: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.14);
+  --line: rgba(255,255,255,0.08);
+  --ok: #4ADE80;
+  --bad: #FF6B57;
+  --warn: #F8991D;
+  --radius: 22px;
+  --shadow: 0 12px 40px rgba(0,0,0,0.35);
+  --font: "Poppins", -apple-system, "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+/* =====================================================================
+   BASE + BACKGROUND GLOWS
+   ===================================================================== */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow.g1 { width: 520px; height: 520px; top: -160px; left: -120px;
+  background: radial-gradient(circle, rgba(0,169,155,0.55), transparent 70%); }
+.glow.g2 { width: 480px; height: 480px; bottom: -160px; right: -140px;
+  background: radial-gradient(circle, rgba(24,140,205,0.5), transparent 70%); }
+.glow.g3 { width: 460px; height: 460px; bottom: -190px; left: 50%; margin-left: -230px;
+  background: radial-gradient(circle, rgba(248,153,29,0.35), transparent 70%); }
+
+.app { position: relative; z-index: 1; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px 24px; }
+
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+/* Shared glass card */
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* =====================================================================
+   PAGES + HEADINGS
+   ===================================================================== */
+.page:not([hidden]) { animation: pageIn .35s ease both; }
+.hero { text-align: center; padding: 26px 0 22px; }
+.title {
+  margin: 0;
+  padding-left: .24em;               /* balances the trailing letter-space */
+  font-size: clamp(24px, 7vw, 58px);
+  font-weight: 800;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  background: linear-gradient(180deg, #F2F9FF 0%, #9FD8FF 55%, #5CB6F0 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.subtitle { margin: 10px 0 0; color: var(--dim); font-size: 14px; }
+.hero.sm { padding: 22px 0 18px; }
+.hero.sm .title { font-size: clamp(20px, 4.6vw, 34px); letter-spacing: .16em; padding-left: .16em; }
+
+/* Loading / empty / error states */
+.state { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 34px 16px; color: var(--dim); font-size: 14px; text-align: center; }
+.state.warn { color: #FFC983; }
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.18); border-top-color: var(--teal); animation: spin .8s linear infinite; flex: none; }
+.skel-rows { display: grid; gap: 12px; padding: 4px 0; }
+.skel-rows .skel-line { height: 34px; border-radius: 12px; }
+.hint { text-align: center; padding: 36px 16px; color: var(--dim); }
+.hint strong { display: block; color: var(--text); font-size: 16px; margin-bottom: 4px; }
+
+/* Footer status */
+.foot { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 16px 34px; color: var(--dim); font-size: 12.5px; text-align: center; }
+.foot .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); flex: none; }
+.foot.ok .dot { background: var(--ok); box-shadow: 0 0 8px rgba(74,222,128,0.7); }
+.foot.error { color: #FFC983; }
+.foot.error .dot { background: var(--warn); }
+
+/* =====================================================================
+   ANIMATION
+   ===================================================================== */
+@keyframes spin   { to { transform: rotate(360deg); } }
+@keyframes pulse  { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@keyframes pageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes rise   { from { height: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
+
+@media (max-width: 420px) {
+  .wrap { padding-left: 12px; padding-right: 12px; }
+}

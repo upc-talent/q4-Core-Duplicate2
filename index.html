@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>United Pharmacy — Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/leaderboard.css">
+</head>
+<body>
+
+<!-- Ambient glows (fixed, decorative) -->
+<div class="glow g1" aria-hidden="true"></div>
+<div class="glow g2" aria-hidden="true"></div>
+<div class="glow g3" aria-hidden="true"></div>
+
+<div class="app">
+  <!-- Top navigation (built by js/nav.js) -->
+  <header class="snav" id="site-nav" data-active="home"></header>
+  <script src="js/nav.js"></script>
+
+  <main class="page">
+    <div class="wrap">
+      <div class="hero">
+        <h1 class="title">Leaderboard</h1>
+        <p class="subtitle">Live team standings, updated automatically</p>
+      </div>
+      <div class="glass podium-card">
+        <div class="podium" id="podium"></div>
+        <p class="note" id="podiumNote" hidden></p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Data status -->
+  <footer class="foot" id="foot" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="statusText">Loading…</span></footer>
+</div>
+
+<noscript><p style="position:relative;z-index:1;text-align:center;color:#FFC983">This dashboard needs JavaScript.</p></noscript>
+
+<script src="js/data.js"></script>
+<script src="js/leaderboard.js"></script>
+</body>
+</html>

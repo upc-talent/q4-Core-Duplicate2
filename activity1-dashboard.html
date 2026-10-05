@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>United Pharmacy — Activity 1 Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/activity1.css">
+</head>
+
+<body>
+
+  <!-- Ambient glows (fixed, decorative) -->
+  <div class="glow g1" aria-hidden="true"></div>
+  <div class="glow g2" aria-hidden="true"></div>
+  <div class="glow g3" aria-hidden="true"></div>
+
+  <div class="app">
+    <!-- Top navigation (built by js/nav.js) -->
+    <header class="snav" id="site-nav" data-active="act1"></header>
+    <script src="js/nav.js"></script>
+
+    <main class="page">
+      <div class="wrap">
+        <div class="hero sm">
+          <h1 class="title">Activity 1 Dashboard</h1>
+          <p class="subtitle">Treatment Arms · skincare ingredient categorization · updates live as teams submit</p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card glass">
+            <div class="stat-top">Teams submitted <div class="stat-icon" style="background:var(--navy);">◆</div>
+            </div>
+            <div class="stat-value" id="statTeams">–</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-top">Players <div class="stat-icon" style="background:var(--blue);">●</div>
+            </div>
+            <div class="stat-value" id="statPlayers">–</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-top">Leading team <div class="stat-icon" style="background:var(--orange);">★</div>
+            </div>
+            <div class="stat-value" id="statLeader">–</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="stat-top">Overall average score <div class="stat-icon" style="background:var(--teal);">Σ</div>
+            </div>
+            <div class="stat-value" id="statAdherence">–</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="glass card">
+            <div class="card-head">
+              <h2>Team ranking</h2>
+            </div>
+            <div id="ranking">
+              <div class="state"><span class="spinner"></span>Loading…</div>
+            </div>
+          </div>
+          <div class="glass card qr-card">
+            <div class="qr-box" id="qrSlot">QR code</div>
+            <div class="qr-label"><strong>Join the activity</strong><span>Scan with your phone</span></div>
+          </div>
+        </div>
+
+        <div class="glass card">
+          <div class="card-head">
+            <h2>Most common mismatches</h2>
+          </div>
+          <div class="mismatch-grid" id="mismatches">
+            <div class="state"><span class="spinner"></span>Loading…</div>
+          </div>
+        </div>
+
+        <div class="glass card">
+          <div class="card-head">
+            <h2>Player detail</h2>
+          </div>
+          <div class="tscroll">
+            <table class="ptable">
+              <thead>
+                <tr>
+                  <th scope="col">Player</th>
+                  <th scope="col">Team</th>
+                  <th scope="col" class="num">Score</th>
+                  <th scope="col" class="num">Trials left</th>
+                </tr>
+              </thead>
+              <tbody id="players">
+                <tr>
+                  <td colspan="4">
+                    <div class="state"><span class="spinner"></span>Loading…</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Data status -->
+    <footer class="foot" id="foot" aria-live="polite"><span class="dot" aria-hidden="true"></span><span
+        id="updated">Loading…</span></footer>
+  </div>
+
+  <noscript>
+    <p style="position:relative;z-index:1;text-align:center;color:#FFC983">This dashboard needs JavaScript.</p>
+  </noscript>
+
+  <script>
+    // This page reads its own Google Apps Script endpoint (Activity 1 sheet).
+    var API_URL = "https://script.google.com/macros/s/AKfycbyU4yHsrZLwH2B2k-1LX1s711K0EvqRS1fkKNRdr95iOnd85dPm-6pJ3NvMfI4fO8UU8g/exec";
+    var REFRESH_MS = 5000;
+
+    var jsonpSeq = 0;
+    function jsonpFetch(url, onData, onError) {
+      var cbName = "upc_jsonp_" + (jsonpSeq++);
+      var script = document.createElement("script");
+      var timeout = setTimeout(function () {
+        cleanup();
+        if (onError) onError(new Error("timeout"));
+      }, 10000);
+
+      function cleanup() {
+        clearTimeout(timeout);
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[cbName] = function (data) {
+        cleanup();
+        onData(data);
+      };
+      script.onerror = function () {
+        cleanup();
+        if (onError) onError(new Error("script load failed"));
+      };
+      var sep = url.indexOf("?") === -1 ? "?" : "&";
+      script.src = url + sep + "callback=" + cbName;
+      document.body.appendChild(script);
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+
+    // Footer status: kind is "ok" or "error" (styles come from site.css)
+    function setStatus(kind, text) {
+      document.getElementById("foot").className = "foot " + kind;
+      document.getElementById("updated").textContent = text;
+    }
+    function showError() {
+      setStatus("error", "Couldn't reach the activity sheet — retrying…");
+    }
+
+    function render(data) {
+      var teams = data.teams || [];
+      var players = data.players || [];
+
+      document.getElementById("statTeams").textContent = teams.length;
+      document.getElementById("statPlayers").textContent = players.length;
+      document.getElementById("statLeader").textContent = teams.length ? teams[0].teamNumber : "–";
+      var overallAvg = teams.length ? (teams.reduce(function (s, t) { return s + t.averageScore; }, 0) / teams.length) : 0;
+      document.getElementById("statAdherence").textContent = teams.length ? Math.round(overallAvg) : "–";
+
+      var maxScore = teams.length ? Math.max.apply(null, teams.map(function (t) { return t.averageScore; })) : 0;
+      var rankingEl = document.getElementById("ranking");
+      rankingEl.innerHTML = teams.length ? teams.map(function (t, i) {
+        var barPct = maxScore > 0 ? Math.round((t.averageScore / maxScore) * 100) : 0;
+        return '' +
+          '<div class="rank-row">' +
+          '<span class="rank' + (i === 0 ? ' r1' : '') + '">' + (i + 1) + '</span>' +
+          '<div>' +
+          '<div class="rank-team">' + escapeHtml(t.teamNumber) + '</div>' +
+          '<div class="rank-players">' + escapeHtml(t.playerCount) + ' player' + (t.playerCount === 1 ? '' : 's') + '</div>' +
+          '</div>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + barPct + '%"></div></div>' +
+          '<div class="rank-pct">' + escapeHtml(t.averageScore) + '</div>' +
+          '</div>';
+      }).join("") : '<div class="state">No submissions yet</div>';
+
+      var mismatchEl = document.getElementById("mismatches");
+      var mismatches = data.topMismatches || [];
+      mismatchEl.innerHTML = mismatches.length ? mismatches.map(function (m) {
+        return '<div class="mismatch-chip"><span>' + escapeHtml(m.pair) + '</span><span class="mismatch-count">' + escapeHtml(m.count) + '</span></div>';
+      }).join("") : '<div class="state">No mismatches recorded yet</div>';
+
+      var playersEl = document.getElementById("players");
+      playersEl.innerHTML = players.length ? players.slice().reverse().map(function (p) {
+        return '<tr><td>' + escapeHtml(p.name) + '</td><td>' + escapeHtml(p.team) + '</td><td class="num">' + escapeHtml(p.score) + '</td><td class="num">' + escapeHtml(p.trialsLeft) + '</td></tr>';
+      }).join("") : '<tr><td colspan="4"><div class="state">No submissions yet</div></td></tr>';
+
+      setStatus("ok", "Last updated " + data.lastUpdated);
+    }
+
+    function poll() {
+      jsonpFetch(API_URL, render, showError);
+    }
+
+    // The shared nav's Refresh pill: fetch now, then stop its spinner.
+    function manualRefresh() {
+      function done() { if (window.UPCNav) UPCNav.done(); }
+      jsonpFetch(API_URL, function (data) { render(data); done(); }, function () { showError(); done(); });
+    }
+    document.addEventListener("upc:refresh", manualRefresh);
+
+    poll();
+    setInterval(poll, REFRESH_MS);
+  </script>
+
+</body>
+
+</html>
